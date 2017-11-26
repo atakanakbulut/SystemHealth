@@ -30,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent) :
     checkTime.start(1000);
     connect(&checkTime,SIGNAL(timeout()),this,SLOT(RefreshStatus()));   
     connect(ui->lineEdit, SIGNAL(returnPressed()),this, SLOT(addIP_Addr()));
+    aa.start(1000);
+    connect(&aa,SIGNAL(timeout()),this,SLOT(refreshAll()));
+
 }
 
 MainWindow::~MainWindow()
@@ -110,6 +113,25 @@ void MainWindow::addIP_Addr()
         qDebug() << "null";
     }
     AddRow("aa",ip_addr);
+}
+
+void MainWindow::refreshAll()
+{
+
+        for(int i=0; i<ui->tableWidget->rowCount(); i++)
+        {
+            QString time = ui->tableWidget->item(i,COLUMN_TIME)->text();
+            QString state = ui->tableWidget->item(i,COLUMN_STATUS)->text();
+            if(time != NULL && state == STATUS_IDLE)
+            {
+                ui->tableWidget->item(i,COLUMN_STATUS)->setText(STATUS_PINGING);
+                QString url = ui->tableWidget->item(i,COLUMN_IP)->text();
+                PingThread *p = new PingThread(url,this);
+                p->start();
+                connect(p,SIGNAL(Result(PingThread*,QString,QString)),this,SLOT(PingResult(PingThread*,QString,QString)));
+            }
+        }
+
 }
 
 

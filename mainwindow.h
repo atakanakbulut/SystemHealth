@@ -29,6 +29,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QTimer checkTime;
+    QTimer aa;
     QTabWidget widget;
     void AddRow(QString name, QString ip_addr);
 public slots:
@@ -38,6 +39,7 @@ public slots:
 private slots:
     void addIP_Addr();
    // void addIP_Addr();
+    void refreshAll();
 
 };
 
